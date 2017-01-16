@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNet.SignalR.Client;
+using System.IO.Ports;
 
 namespace SnooperClient
 {
@@ -27,12 +28,18 @@ namespace SnooperClient
                 }
             }).Wait();
             //connection.StateChanged += connection_StateChanged;
+            Console.WriteLine("Please enter a port number");
+            string portNo = Console.ReadLine();
+            string port = "COM" + portNo;
+            SerialPort _com = new SerialPort(port,9600,Parity.None,8,StopBits.One);
+            Controller _controller = new SnooperClient.Controller();
 
-            myHub.On("control", param => {
-                Console.WriteLine(param.message);
+            myHub.On<ControlParamViewModel>("control", param => {
+                _controller.controller(_com,param);
             });
-
-            Console.Read();
+        Mark:
+            string command = Console.ReadLine();
+            if (command != "exit") goto Mark;
             connection.Stop();
         }
     }
