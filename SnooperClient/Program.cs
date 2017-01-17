@@ -8,6 +8,8 @@ namespace SnooperClient
     {
         static void Main()
         {
+            string previousButton = null;
+            bool previousDirection = false;
             //Set connection
             var connection = new HubConnection("http://www.squty.com/signalr/hubs");
             //Make proxy to hub based on hub name on server
@@ -31,11 +33,21 @@ namespace SnooperClient
             Console.WriteLine("Please enter a port number");
             string portNo = Console.ReadLine();
             string port = "COM" + portNo;
-            SerialPort _com = new SerialPort(port,9600,Parity.None,8,StopBits.One);
+            SerialPort _com = new SerialPort(port, 9600, Parity.None, 8, StopBits.One);
             Controller _controller = new SnooperClient.Controller();
 
-            myHub.On<ControlParamViewModel>("control", param => {
-                _controller.controller(_com,param);
+            myHub.On<ControlParamViewModel>("control", param =>
+            {
+                if (param.direction == previousDirection && param.button == previousButton)
+                {
+                    
+                }
+                else
+                {
+                    previousDirection = param.direction;
+                    previousButton = param.button;
+                    _controller.controller(_com, param);
+                }
             });
         Mark:
             string command = Console.ReadLine();
