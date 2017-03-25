@@ -13,7 +13,7 @@ namespace SnooperClient
             //Set connection
             var connection = new HubConnection("http://www.squty.com/signalr/hubs");
             //Make proxy to hub based on hub name on server
-            IHubProxy myHub = connection.CreateHubProxy("chatHub");
+            IHubProxy myHub = connection.CreateHubProxy("snooperHub");
             //Start connection
             connection.Start().ContinueWith(task =>
             {
